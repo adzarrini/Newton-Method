@@ -1,5 +1,7 @@
 package triangulation;
 
+import static org.junit.Assert.assertEquals;
+
 import java.awt.geom.Point2D;
 
 /* This code is written to find the location of a point when given 3 points.
@@ -53,10 +55,19 @@ public class Triangulate {
 	}
 	
 	public Point2D findLocation() {
+		double[] ang = this.getInnerAngle();
+		for (int i = 0; i < ang.length; i++) {
+			ang[i] = Math.toRadians(ang[i]);
+		}
+		
+		//Function f = new F
+		
 		
 		return new Point2D.Double(0,0);
 	}
 	
+	
+	// Finds the location of the unknown point given 3 points and a distance
 	public Point2D trilaterate() {
 		Point2D location = new Point2D.Double();
 		double A = 2*(-p1.getX() + p2.getX());
@@ -75,6 +86,7 @@ public class Triangulate {
 
 	}
 	
+	// Method finds the angles between the LOS of the three points
 	public double[] getInnerAngle(double[] ang) {
 		double[] innerAng = new double[ang.length];
 		
@@ -95,8 +107,27 @@ public class Triangulate {
 		return getInnerAngle(ang);
 	}
 	
-	public static void main(String[] args) {
+	// Method finds the distance between each of the 3 points
+	public double[] getDistance() {
+		Point2D[] points = new Point2D.Double[3];
+		points[0] = p1;
+		points[1] = p2;
+		points[2] = p3;
 		
+		return getDistance(points);
+	}
+	
+	public double[] getDistance(Point2D[] points) {
+		double[] distance = new double[points.length];
+		for (int i = 0; i < points.length; i++) {
+			distance[i] = Math.sqrt(Math.pow(points[i].getX()-points[(i+1)%points.length].getX(),2)+Math.pow(points[i].getY()-points[(i+1)%points.length].getY(),2));
+		}
+		
+		return distance;
+	}
+	
+	public static void main(String[] args) {
+
 	}
 	
 	

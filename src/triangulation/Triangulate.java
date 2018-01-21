@@ -63,8 +63,14 @@ public class Triangulate {
 	}
 	
 	public double[] getInnerAngle(double[] ang) {
+		double[] innerAng = new double[ang.length];
 		
-		return new double[3];
+		for (int i = 0; i < ang.length; i++) {
+			innerAng[i] = Math.abs(ang[i] - ang[(i+1) % ang.length]);
+			if (innerAng[i] > 180) innerAng[i] = 360 - innerAng[i];
+		}
+		
+		return innerAng;
 	}
 	
 	public double[] getInnerAngle() {

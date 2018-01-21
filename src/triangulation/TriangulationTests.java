@@ -49,17 +49,17 @@ public class TriangulationTests {
 		test.setAngles(ang1, ang2, ang3);
 		double err = 1e-4; 
 		
-		double[] ang = test.getInnerAngle();
+		double[] innerAng = test.getInnerAngle();
 		double actual1 = 104.6865;
 		double actual2 = 155.5472;
 		double actual3 = 99.7663;
 		
 		double sum = 0;
-		for(int i = 0; i < ang.length; i++) sum += ang[i];
+		for(int i = 0; i < innerAng.length; i++) sum += innerAng[i];
 		
-		assertEquals(actual1, ang[0], err);
-		assertEquals(actual2, ang[1], err);
-		assertEquals(actual3, ang[2], err);
+		assertEquals(actual1, innerAng[0], err);
+		assertEquals(actual2, innerAng[1], err);
+		assertEquals(actual3, innerAng[2], err);
 		assertEquals(360, sum, err);
 		
 	}

@@ -21,9 +21,9 @@ public class Triangulate {
 	private double r3;
 	
 	// Angle from an arbitrary measuring point to the Line of Sight (LOS) of know points
-	private double a;
-	private double b;
-	private double c;
+	private double ang1;
+	private double ang2;
+	private double ang3;
 	
 	public Triangulate() {
 		p1 = new Point2D.Double();
@@ -46,15 +46,34 @@ public class Triangulate {
 	}
 		
 	// This method must be called before 
-	public void setAngles(double a, double b, double c) {
-		this.a = a;
-		this.b = b;
-		this.c = c;
+	public void setAngles(double ang1, double ang2, double ang3) {
+		this.ang1 = ang1;
+		this.ang2 = ang2;
+		this.ang3 = ang3;
 	}
 	
 	public Point2D findLocation() {
 		
 		return new Point2D.Double(0,0);
+	}
+	
+	public Point2D trilaterate() {
+		
+		return new Point2D.Double(0,0);
+	}
+	
+	public double[] getInnerAngle(double[] ang) {
+		
+		return new double[3];
+	}
+	
+	public double[] getInnerAngle() {
+		double[] ang = new double[3];
+		ang[0] = ang1;
+		ang[1] = ang2;
+		ang[2] = ang3;
+	
+		return getInnerAngle(ang);
 	}
 	
 	public static void main(String[] args) {

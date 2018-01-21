@@ -43,9 +43,9 @@ public class TriangulationTests {
 		double err = 1e-4; 
 		
 		double[] innerAng = test.getInnerAngle();
-		double actual1 = 104.6865;
-		double actual2 = 155.5472;
-		double actual3 = 99.7663;
+		double actual1 = Math.toRadians(104.6865);
+		double actual2 = Math.toRadians(155.5472);
+		double actual3 = Math.toRadians(99.7663);
 		
 		double sum = 0;
 		for(int i = 0; i < innerAng.length; i++) sum += innerAng[i];
@@ -53,36 +53,8 @@ public class TriangulationTests {
 		assertEquals(actual1, innerAng[0], err);
 		assertEquals(actual2, innerAng[1], err);
 		assertEquals(actual3, innerAng[2], err);
-		assertEquals(360, sum, err);
+		assertEquals(2*Math.PI, sum, err);
 		
-	}
-	
-	// Tests the final version of triangulation. Tests if location is found using angles and points
-	@Test
-	public void testFindLocation() {
-		// Initialize 3 points
-		Point2D p1 = new Point2D.Double(1.848,8.331);
-		Point2D p2 = new Point2D.Double(10.241,9.463);
-		Point2D p3 = new Point2D.Double(8.889,2.456);
-		
-		// Initialize 3 angles in degrees.
-		double ang1 = 168.7810;
-		double ang2 = 64.0945;
-		double ang3 = 268.5473;
-		
-		// Initialized the Triangulate object and load points and radii
-		Triangulate test = new Triangulate();
-		test.setPoints(p1, p2, p3);
-		test.setAngles(ang1, ang2, ang3);	
-		// Set the given and actual location with the error we have
-		Point2D loc = test.findLocation();
-		Point2D actual = new Point2D.Double(9.002, 6.912);
-		double err = 1e-4; 
-		
-		// Test x and y coordinates  within a certain error
-		assertEquals(actual.getX(), loc.getX(), err);
-		assertEquals(actual.getY(), loc.getY(), err);
-
 	}
 	
 	// Tests the localizing algorithm when 3 points known with 3 distances from those points
@@ -106,6 +78,34 @@ public class TriangulationTests {
 			// Set the given and actual location with the error we have
 			Point2D loc = test.trilaterate();
 			Point2D actual = new Point2D.Double(5, 7);
+			double err = 1e-4; 
+			
+			// Test x and y coordinates  within a certain error
+			assertEquals(actual.getX(), loc.getX(), err);
+			assertEquals(actual.getY(), loc.getY(), err);
+
+		}
+		
+		// Tests the final version of triangulation. Tests if location is found using angles and points
+		@Test
+		public void testFindLocation() {
+			// Initialize 3 points
+			Point2D p1 = new Point2D.Double(1.848,8.331);
+			Point2D p2 = new Point2D.Double(10.241,9.463);
+			Point2D p3 = new Point2D.Double(8.889,2.456);
+			
+			// Initialize 3 angles in degrees.
+			double ang1 = 168.7810;
+			double ang2 = 64.0945;
+			double ang3 = 268.5473;
+			
+			// Initialized the Triangulate object and load points and radii
+			Triangulate test = new Triangulate();
+			test.setPoints(p1, p2, p3);
+			test.setAngles(ang1, ang2, ang3);	
+			// Set the given and actual location with the error we have
+			Point2D loc = test.findLocation();
+			Point2D actual = new Point2D.Double(9.002, 6.912);
 			double err = 1e-4; 
 			
 			// Test x and y coordinates  within a certain error

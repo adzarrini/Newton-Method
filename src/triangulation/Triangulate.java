@@ -58,8 +58,21 @@ public class Triangulate {
 	}
 	
 	public Point2D trilaterate() {
+		Point2D location = new Point2D.Double();
+		double A = 2*(-p1.getX() + p2.getX());
+		double B = 2*(-p1.getY() + p2.getY());
+		double C = Math.pow(r1,2) - Math.pow(r2,2) - Math.pow(p1.getX(),2) + Math.pow(p2.getX(),2) - Math.pow(p1.getY(),2) + Math.pow(p2.getY(),2);
+		double D = 2*(-p2.getX() + p3.getX());
+		double E = 2*(-p2.getY() + p3.getY());
+		double F = Math.pow(r2,2) - Math.pow(r3,2) - Math.pow(p2.getX(),2) + Math.pow(p3.getX(),2) - Math.pow(p2.getY(),2) + Math.pow(p3.getY(),2);
+		double n = D/A;
 		
-		return new Point2D.Double(0,0);
+		
+		double yTemp = (F-n*C)/(E-n*B);
+		location.setLocation((C/A) - (B/A)*yTemp, yTemp);
+
+		return location;
+
 	}
 	
 	public double[] getInnerAngle(double[] ang) {

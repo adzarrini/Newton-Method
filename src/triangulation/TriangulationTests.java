@@ -88,7 +88,7 @@ public class TriangulationTests {
 		
 		// Tests the final version of triangulation. Tests if location is found using angles and points
 		@Test
-		public void testFindLocation() {
+		public void testFindLocation1() {
 			// Initialize 3 points
 			Point2D p1 = new Point2D.Double(1.848,8.331);
 			Point2D p2 = new Point2D.Double(10.241,9.463);
@@ -106,6 +106,34 @@ public class TriangulationTests {
 			// Set the given and actual location with the error we have
 			Point2D loc = test.findLocation();
 			Point2D actual = new Point2D.Double(9.002, 6.912);
+			double err = 1e-4; 
+			
+			// Test x and y coordinates  within a certain error
+			assertEquals(actual.getX(), loc.getX(), err);
+			assertEquals(actual.getY(), loc.getY(), err);
+
+		}
+		
+		// Tests the final version of triangulation. Tests if location is found using angles and points
+		@Test
+		public void testFindLocation2() {
+			// Initialize 3 points
+			Point2D p1 = new Point2D.Double(0,0);
+			Point2D p2 = new Point2D.Double(1,1);
+			Point2D p3 = new Point2D.Double(10,1);
+			
+			// Initialize 3 angles in degrees.
+			double ang1 = 187.1250;
+			double ang2 = 170.5377;
+			double ang3 = 4.7636;
+			
+			// Initialized the Triangulate object and load points and radii
+			Triangulate test = new Triangulate();
+			test.setPoints(p1, p2, p3);
+			test.setAngles(ang1, ang2, ang3);	
+			// Set the given and actual location with the error we have
+			Point2D loc = test.findLocation();
+			Point2D actual = new Point2D.Double(4,0.5);
 			double err = 1e-4; 
 			
 			// Test x and y coordinates  within a certain error

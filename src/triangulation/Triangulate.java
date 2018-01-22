@@ -83,6 +83,8 @@ public class Triangulate {
 			counter++;
 		}
 		System.out.println("Newton Method iteration count of : " + counter);
+		System.out.println("Maximum error from the solution: " + error + "\n");
+		
 		
 		
 		return xnew;

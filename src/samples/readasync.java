@@ -9,6 +9,7 @@ import com.thingmagic.*;
 import java.awt.geom.Point2D;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -25,7 +26,12 @@ public class readasync
     static SerialPrinter serialPrinter;
   static StringPrinter stringPrinter;
   static TransportListener currentListener;
-
+  
+  /******Allee Code*****/
+  static File tagFile;
+  static File medFile;
+  /*********************/
+  
   static void usage()
   {
     System.out.printf("Usage: Please provide valid arguments, such as:\n"
@@ -146,6 +152,9 @@ public class readasync
         r.addReadExceptionListener(exceptionListener);
         // Create and add tag listener
         // Tag listener outputs all necessary info to a file
+        tagFile = new File("tags.txt");
+        medFile = new File("RssVals.txt");
+        
         ReadListener rl = new IndividualListener();
         r.addReadListener(rl);
         Map<String, Double> rf = new HashMap<String, Double>();
@@ -153,29 +162,26 @@ public class readasync
         int c = 0;
         int numStops = 12;
         while (c < numStops) {
+            System.out.println("Start");
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             char l = br.readLine().charAt(0);
             if(l == 'q') break;       
             // search for tags in the background
-            BufferedWriter bw = new BufferedWriter(new FileWriter("RssVals.txt"));
+            BufferedWriter bw = new BufferedWriter(new FileWriter(medFile));
             bw.write("");
             bw.flush();
+            //System.out.println("Here");
             r.startReading();
             System.out.println("Counter: " + c++);
-            Thread.sleep(1000);
+            Thread.sleep(2000);
             // Reads all the tag data from file
             Map<String, Double> tagVals = readTagVals();
-            //System.out.println(tagVals.toString());
+            System.out.println(tagVals.toString());
             for(String tag : tagVals.keySet()) {
-                //System.out.println(rf.toString());
                 if(!rf.containsKey(tag)) {
-                    //System.out.println("Here1");
                     rf.put(tag, Double.NEGATIVE_INFINITY);
                 }
-                //System.out.println(rf.get(tag));
-                //System.out.println(tagVals.get(tag));
                 if(rf.get(tag) < tagVals.get(tag)) {
-                    //System.out.println("Here2");
                     rf.put(tag, tagVals.get(tag));
                     angle.put(tag, (c-1)*(360.0/numStops));
                 }
@@ -185,19 +191,22 @@ public class readasync
             r.stopReading();
             System.out.println("Finish");
         }
+        System.out.println(angle.toString());
+        System.out.println("Rotation Process Complete!");
+        r.removeReadListener(rl);
+        r.removeReadExceptionListener(exceptionListener);
+        // Shut down reader
+        r.destroy();
+        
         if(angle.size() < 3) {
           System.err.println("Did not detect 3 tags!");
         }
-        HashMap<String, Point2D> points = getPoints();
-        
-        Point2D location = findLocation(points, angle);
+        HashMap<String, Point2D> point = parseTagPoints();
+        System.out.println(point.toString());
+        Point2D location = findLocation(point, angle);
         System.out.println("Location: " + location.toString());
         
-        r.removeReadListener(rl);
-        r.removeReadExceptionListener(exceptionListener);
-
-        // Shut down reader
-        r.destroy();
+        
     } 
     catch (ReaderException re)
     {
@@ -222,9 +231,10 @@ public class readasync
   {
       public void tagRead(Reader r, TagReadData tr) 
       {
+          //System.out.println(tr.toString());
           try
           {
-              BufferedWriter bw = new BufferedWriter(new FileWriter("RssVals.txt",true));
+              BufferedWriter bw = new BufferedWriter(new FileWriter(medFile,true));
               bw.write(tr.epcString() + "\t" + tr.getRssi() + "\n");
               bw.flush();
           }
@@ -240,7 +250,7 @@ public class readasync
       Map<String, Double> tagRss = new HashMap<String, Double>();
       Map<String, Double> tagCount = new HashMap<String, Double>();
       try {
-          BufferedReader br = new BufferedReader(new FileReader("RssVals.txt"));
+          BufferedReader br = new BufferedReader(new FileReader(medFile));
           String line = "";
           while((line=br.readLine())!=null) {
               StringTokenizer s = new StringTokenizer(line);
@@ -264,12 +274,20 @@ public class readasync
   }
   
   // create map with tags here
-  public static HashMap<String, Point2D> getPoints() {
-      
-      return new HashMap<String,Point2D>();
+  public static HashMap<String, Point2D> parseTagPoints() throws Exception {
+      System.out.println("Parsing Points!");
+      HashMap<String,Point2D> location = new HashMap<String, Point2D>();
+      BufferedReader br = new BufferedReader(new FileReader(tagFile));
+      String l = br.readLine();
+      while((l=br.readLine())!=null) {
+          StringTokenizer s = new StringTokenizer(l);
+          location.put(s.nextToken(), new Point2D.Double(Double.parseDouble(s.nextToken()), Double.parseDouble(s.nextToken())));
+      }
+      return location;
   }
   
   public static Point2D findLocation(Map<String, Point2D> point, Map<String,Double> angle) {
+      System.out.println("Finding Location!");
       Triangulate solve = new Triangulate();
       Point2D[] points = new Point2D[3];
       double[] angles = new double[3];

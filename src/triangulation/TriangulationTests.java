@@ -1,12 +1,11 @@
-package triangulation;
-
-import static org.junit.Assert.*;
-
 import java.awt.geom.Point2D;
 
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 public class TriangulationTests {
+
 	// Tests the method used to find the distances from the 3 known points. 
 	@Test
 	public void testGetDistance() {

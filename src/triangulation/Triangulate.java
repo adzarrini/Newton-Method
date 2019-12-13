@@ -1,7 +1,11 @@
-package triangulation;
+//package triangulation;
 
 import java.awt.geom.Point2D;
 import Jama.Matrix;
+
+import org.junit.runner.notification.Failure;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
 
 /* This code is written to find the location of a point when given 3 points.
  * Extra information is necessary. This extra information must be either 3 distances or 3 angles to the points.
@@ -82,10 +86,8 @@ public class Triangulate {
 			x = xnew.plus(new Matrix(9,1));
 			counter++;
 		}
-		System.out.println("Newton Method iteration count of : " + counter);
-		System.out.println("Maximum error from the solution: " + error + "\n");
-		
-		
+		//System.out.println("Newton Method iteration count of : " + counter);
+		//System.out.println("Maximum error from the solution: " + error + "\n");
 		
 		return xnew;
 	}
@@ -206,7 +208,20 @@ public class Triangulate {
 	}
 	
 	public static void main(String[] args) {
+		JUnitCore junit = new JUnitCore();
+		Result result = junit.run(TriangulationTests.class);
+		resultReport(result);
+   }
+
+	public static void resultReport(Result result) {
+    	System.out.println("Result:");
+    	System.out.println("\tFailures:\t\t" + result.getFailureCount()) ;
+    	System.out.println("\tIgnored:\t\t" + result.getIgnoreCount()); 
+    	System.out.println("\tTests run:\t\t" + result.getRunCount());
+    	System.out.println("\tTime:\t\t\t" + result.getRunTime() + "ms");
+ 		
+ 		for (Failure failure : result.getFailures()) {
+    	 	System.out.println(failure.toString());
+ 		}
 	}
-	
-	
 }
